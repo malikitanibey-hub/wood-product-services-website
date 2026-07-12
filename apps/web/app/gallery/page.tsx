@@ -2,7 +2,10 @@ import { WorkGallery } from "@/components/home/WorkGallery";
 import { Materials } from "@/components/home/Materials";
 import { Contact } from "@/components/home/Contact";
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api";
+const API =
+  process.env.SERVER_API_URL ??
+  process.env.NEXT_PUBLIC_API_URL ??
+  "http://localhost:4000/api";
 async function getProducts() {
   try {
     const r = await fetch(`${API}/products`, { cache: "no-store" });
