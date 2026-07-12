@@ -12,6 +12,9 @@
     "prisma:migrate": "prisma migrate dev",
     "admin:seed": "node prisma/seed-admin.js"
   },
+  "prisma": {
+    "seed": "node prisma/seed-admin.js"
+  },
   "devDependencies": {
     "concurrently": "^8.0.6",
     "prisma": "^5.22.0"
