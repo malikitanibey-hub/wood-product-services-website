@@ -6,15 +6,20 @@ const nextConfig = {
     webpackBuildWorker: false,
   },
 
-  async rewrites() {
-    return [
-      {
-        source: "/backend/:path*",
-        destination:
-          "https://wood-product-services-website.onrender.com/api/:path*",
-      },
-    ];
-  },
+async rewrites() {
+  return [
+    {
+      source: "/backend/:path*",
+      destination:
+        "https://wood-product-services-website.onrender.com/api/:path*",
+    },
+    {
+      source: "/uploads/:path*",
+      destination:
+        "https://wood-product-services-website.onrender.com/uploads/:path*",
+    },
+  ];
+},
 
   webpack: (config, { dev }) => {
     if (dev) {
