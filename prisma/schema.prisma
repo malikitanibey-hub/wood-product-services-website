@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               Int      @id @default(autoincrement())
+  email            String   @unique
+  name             String?
+  passwordHash     String
+  refreshTokenHash String?
+  role             String   @default("ADMIN")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model HomepageContent {
+  id           Int      @id @default(1)
+  hero         Json
+  banners      Json
+  textSections Json
+  images       Json
+  updatedAt    DateTime @updatedAt
+}
+
+model Service {
+  id               Int      @id @default(autoincrement())
+  name             String
+  shortDescription String
+  description      String?
+  image            String?
+  category         String   @default("General")
+  price            String?
+  active           Boolean  @default(true)
+  displayOrder     Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model PriceGroup {
+  id           Int      @id @default(autoincrement())
+  name         String
+  rows         Json
+  displayOrder Int      @default(0)
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model WoodProduct {
+  id              Int      @id @default(autoincrement())
+  name            String
+  category        String
+  image           String?
+  characteristics Json
+  active          Boolean  @default(true)
+  displayOrder    Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model GalleryImage {
+  id           Int      @id @default(autoincrement())
+  title        String
+  image        String
+  alt          String
+  active       Boolean  @default(true)
+  displayOrder Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model SiteContent {
+  id        Int      @id @default(1)
+  about     Json
+  contact   Json
+  login     Json
+  updatedAt DateTime @updatedAt
+}
