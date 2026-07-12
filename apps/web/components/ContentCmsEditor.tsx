@@ -54,7 +54,9 @@ export function ContentCmsEditor({
     [loading, setLoading] = useState(true),
     [message, setMessage] = useState(""),
     [confirmReset, setConfirmReset] = useState(false),
-    [uploading, setUploading] = useState(false);
+    [uploading, setUploading] = useState(false),
+    [mobileSidebarOpen, setMobileSidebarOpen] = useState(false),
+    [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true);
   async function upload(file: File, key: string, index?: number) {
     setUploading(true);
     const form = new FormData();
@@ -93,6 +95,12 @@ export function ContentCmsEditor({
     const t = setTimeout(() => setMessage(""), 5000);
     return () => clearTimeout(t);
   }, [message]);
+  useEffect(() => {
+    document.body.style.overflow = mobileSidebarOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileSidebarOpen]);
   async function save() {
     const r = await fetch(`${API}/site-content/${section}`, {
       method: "PATCH",
@@ -122,8 +130,40 @@ export function ContentCmsEditor({
         ? "Contact Management"
         : "Login Management (CMS)";
   return (
-    <main className="min-h-screen bg-[#f5f7fb] text-slate-800 lg:grid lg:grid-cols-[250px_1fr]">
-      <aside className="min-h-screen bg-[#101214] p-6 text-white">
+    <main
+      className={`min-h-screen bg-[#f5f7fb] text-slate-800 xl:grid ${desktopSidebarOpen ? "xl:grid-cols-[250px_1fr]" : "xl:grid-cols-[1fr]"}`}
+    >
+      {mobileSidebarOpen && (
+        <button
+          type="button"
+          className="fixed inset-0 z-[70] bg-black/65 xl:hidden"
+          onClick={() => setMobileSidebarOpen(false)}
+          aria-label="Close sidebar overlay"
+        />
+      )}
+      <aside
+        className={`fixed left-0 top-0 z-[80] flex h-dvh max-h-dvh
+w-[min(280px,82vw)] flex-col overflow-y-auto
+bg-[#101214] p-6 text-white transition-transform duration-300
+xl:sticky xl:top-0 xl:h-screen xl:w-[250px]
+${mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"}
+${desktopSidebarOpen ? "xl:translate-x-0" : "xl:hidden"}`}
+      >
+        <button
+          type="button"
+          onClick={() => setMobileSidebarOpen(false)}
+          className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-gray-300 hover:bg-white/10 xl:hidden"
+          aria-label="Close sidebar"
+        >
+          <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
+            <path
+              d="M6 6l12 12M18 6 6 18"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+          </svg>
+        </button>
         <Link href="/">
           <Image src="/images/logo.png" width={135} height={58} alt="BIO CWT" />
         </Link>
@@ -132,6 +172,7 @@ export function ContentCmsEditor({
             <Link
               key={l}
               href={h}
+              onClick={() => setMobileSidebarOpen(false)}
               className={`rounded-md px-4 py-3 ${h === `/admin/${section}` ? "bg-[#475a73]" : "hover:bg-white/10"}`}
             >
               {l}
@@ -139,9 +180,20 @@ export function ContentCmsEditor({
           ))}
         </nav>
       </aside>
-      <section>
+      <section className="min-w-0">
         <header className="sticky top-0 z-30 flex h-[98px] items-center justify-between bg-[#101214] px-8 text-white">
-          <span className="text-3xl">☰</span>
+          <button
+            type="button"
+            onClick={() => {
+              if (window.innerWidth < 1280)
+                setMobileSidebarOpen((open) => !open);
+              else setDesktopSidebarOpen((open) => !open);
+            }}
+            className="text-3xl text-gray-300"
+            aria-label="Toggle sidebar"
+          >
+            ☰
+          </button>
           <AdminMenu />
         </header>
         {message && (
@@ -150,7 +202,7 @@ export function ContentCmsEditor({
           </div>
         )}
         <div className="p-5 md:p-8">
-          <div className="flex justify-between">
+          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
             <div>
               <h1 className="text-3xl font-bold">{title}</h1>
               <p className="mt-1 text-slate-500">
