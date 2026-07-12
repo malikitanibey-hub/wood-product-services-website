@@ -7,7 +7,10 @@ import { Contact } from "@/components/home/Contact";
 import { CmsBanners } from "@/components/home/CmsBanners";
 import { CmsTextSections } from "@/components/home/CmsTextSections";
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api";
+const API =
+  process.env.SERVER_API_URL ??
+  process.env.NEXT_PUBLIC_API_URL ??
+  "http://localhost:4000/api";
 
 async function getHomepage() {
   try {
